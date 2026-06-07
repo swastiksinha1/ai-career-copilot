@@ -9,14 +9,8 @@
     <a href="https://nextjs.org/"><img src="https://img.shields.io/badge/Next.js-15-black?style=flat-square&logo=next.js" alt="Next.js" /></a>
     <a href="https://tailwindcss.com/"><img src="https://img.shields.io/badge/Tailwind-CSS-0ea5e9?style=flat-square&logo=tailwind-css" alt="Tailwind CSS" /></a>
     <a href="https://supabase.com/"><img src="https://img.shields.io/badge/Supabase-Database-3ecf8e?style=flat-square&logo=supabase" alt="Supabase" /></a>
-    <a href="https://www.anthropic.com/"><img src="https://img.shields.io/badge/Anthropic-Claude-d97757?style=flat-square&logo=anthropic" alt="Anthropic" /></a>
+    <a href="https://ai.google.dev/"><img src="https://img.shields.io/badge/Google_Gemini-8E75B2?style=flat-square&logo=google-gemini&logoColor=white" alt="Gemini" /></a>
   </p>
-</div>
-
----
-
-<div align="center">
-  <img src="./public/hero-mockup.png" alt="Dashboard Mockup" width="100%" />
 </div>
 
 ## 🌟 Overview
@@ -41,7 +35,7 @@
 | **Database** | [PostgreSQL (Supabase)](https://supabase.com) | Highly scalable relational database. |
 | **ORM** | [Prisma](https://prisma.io) | Typescript-first database toolkit. |
 | **Auth** | [Clerk](https://clerk.dev) | Secure, drop-in authentication and user management. |
-| **AI** | Anthropic / Google Gemini | LLMs powering the resume analysis and mock interviews. |
+| **AI** | Google Gemini | Gemini 2.5 Flash powering the resume analysis and mock interviews. |
 
 ## 🚀 Getting Started
 
@@ -50,7 +44,7 @@ Make sure you have the following installed and set up:
 - **Node.js** (v20 or newer)
 - **Supabase** account (for your PostgreSQL instance)
 - **Clerk** account (for authentication keys)
-- **Anthropic / Gemini** API Keys
+- **Google Gemini** API Key
 
 ### Installation
 
@@ -78,7 +72,6 @@ Make sure you have the following installed and set up:
 
    # AI Configuration
    GEMINI_API_KEY=your_gemini_api_key
-   ANTHROPIC_API_KEY=your_anthropic_api_key
    ```
 
 4. **Initialize the Database:**
