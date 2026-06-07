@@ -19,12 +19,13 @@
 
 ## ✨ Core Features
 
-- **📄 AI Resume Analysis:** Upload your PDF resume and let our AI extract your skills, score your role-fit, and identify exact gaps.
-- **🎯 Intelligent Job Matching:** Paste a target Job Description. The AI will compare it to your resume and provide a tailored match score.
-- **🗺️ Personalized Roadmaps:** Generate a week-by-week interview prep plan tailored strictly to your skill gaps.
-- **📋 Unified Application Tracker:** A high-performance Kanban board from *Wishlist* to *Offer*. Never lose track again.
-- **🎙️ Mock Interviews:** Dynamic, role-specific technical questions evaluated with real-time feedback.
-- **✍️ Cover Letter Engine:** Draft highly-tailored cover letters automatically based on your resume and target jobs.
+- **📄 AI Resume Analysis:** Upload your PDF resume and let our AI parse your experience, extract your skills, score your role-fit against industry standards, and identify the exact gaps holding you back.
+- **🎯 Intelligent Job Matching:** Paste a target Job Description. The AI will instantly compare it to your resume, provide a highly-tailored match score, and surface missing keywords to help you beat the ATS.
+- **🐙 GitHub & LinkedIn Scorer:** Drop in your profile links to receive specific, actionable feedback designed to boost your GitHub and LinkedIn profile scores and attract technical recruiters.
+- **🗺️ Personalized Roadmaps:** Generate a comprehensive, week-by-week interview prep plan tailored strictly to your skill gaps and target company.
+- **📋 Unified Application Tracker:** A high-performance Kanban board built to track your entire pipeline from *Wishlist* to *Offer*. Store notes, dates, and statuses so you never lose track again.
+- **🎙️ Mock Interviews:** Dynamic, role-specific technical and behavioral questions evaluated with real-time feedback to drastically improve your interview performance.
+- **✍️ Cover Letter Engine:** Draft highly-tailored, professional cover letters automatically based on your parsed resume data and target job descriptions.
 
 ## 🛠️ Technology Stack
 
