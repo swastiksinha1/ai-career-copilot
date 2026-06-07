@@ -61,22 +61,10 @@ export default async function LandingPage() {
       <StarSparkle top="80%" left="85%" size={16} opacity={0.6} delay="0.8s" />
 
       {/* Nav */}
-      <nav style={{
-        display: "grid", 
-        gridTemplateColumns: "1fr auto 1fr", 
-        alignItems: "center",
-        padding: "32px 48px",
-        position: "relative", zIndex: 10
-      }}>
-        {/* Left Links */}
-        <div style={{ display: "flex", gap: "12px", fontSize: "14px", fontWeight: 600, color: "rgba(255,255,255,0.7)" }}>
-          <Link href="/dashboard" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Dashboard</Link>
-          <Link href="/resume" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Resume Setup</Link>
-          <Link href="/interview" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Mock Interview</Link>
-        </div>
-
-        {/* Center Logo */}
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", justifyContent: "center" }}>
+      <nav className="flex items-center justify-between px-6 py-6 md:px-12 md:py-8 relative z-10">
+        
+        {/* Logo (Left on mobile, Center on desktop) */}
+        <div className="flex items-center gap-3 md:absolute md:left-1/2 md:-translate-x-1/2">
           <Image src="/logo.png" alt="Logo" width={32} height={32} style={{ filter: "drop-shadow(0 0 8px rgba(255,255,255,0.2))" }} />
           <span style={{
             fontFamily: "Inter, sans-serif", fontWeight: 600, fontSize: "18px",
@@ -85,10 +73,17 @@ export default async function LandingPage() {
             AI Career Copilot
           </span>
         </div>
+
+        {/* Left Links (Hidden on mobile) */}
+        <div className="hidden lg:flex gap-3 text-sm font-semibold text-white/70">
+          <Link href="/dashboard" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Dashboard</Link>
+          <Link href="/resume" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Resume Setup</Link>
+          <Link href="/interview" className="hover:text-white hover:bg-white/10 px-4 py-2 rounded-full transition-all duration-300" style={{ textDecoration: "none", color: "inherit" }}>Mock Interview</Link>
+        </div>
         
         {/* Right side - Socials & Sign In */}
-        <div style={{ display: "flex", gap: "24px", alignItems: "center", justifyContent: "flex-end" }}>
-          <div style={{ display: "flex", gap: "16px", color: "rgba(255,255,255,0.6)", alignItems: "center" }}>
+        <div className="flex gap-4 md:gap-6 items-center ml-auto">
+          <div className="hidden sm:flex gap-4 text-white/60 items-center">
             <a href="https://github.com/swastiksinha1" target="_blank" rel="noopener noreferrer" style={{ color: "inherit" }}>
               <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" className="hover:text-white transition-colors cursor-pointer">
                 <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
@@ -130,10 +125,7 @@ export default async function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{
-        maxWidth: "900px", margin: "0 auto", padding: "60px 24px 120px",
-        textAlign: "center", position: "relative", zIndex: 10
-      }}>
+      <section className="max-w-[900px] mx-auto px-6 pt-16 pb-32 md:pt-24 md:pb-40 text-center relative z-10">
         
         {/* Glowing Aura behind text */}
         <div style={{ position: "absolute", top: "40%", left: "50%", transform: "translate(-50%, -50%)", width: "100%", height: "100%", zIndex: -1, pointerEvents: "none", display: "flex", justifyContent: "center", alignItems: "center" }}>
@@ -171,7 +163,7 @@ export default async function LandingPage() {
           to automate your job hunt while you focus on interviews.
         </p>
 
-        <div style={{ display: "flex", gap: "16px", justifyContent: "center" }}>
+        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center px-4 w-full">
           {!userId ? (
             <SignUpButton mode="modal">
               <button className="hover:-translate-y-2 hover:scale-105 hover:shadow-[0_15px_40px_rgba(59,130,246,0.6)] transition-all duration-300" style={{
@@ -225,12 +217,12 @@ export default async function LandingPage() {
         gap: "12px",
         zIndex: 10
       }}>
-        <div style={{ display: "flex", gap: "24px", color: "rgba(255,255,255,0.4)", fontSize: "13px", fontWeight: 500 }}>
+        <div className="flex flex-wrap justify-center gap-6 text-white/40 text-xs md:text-sm font-medium">
           <Link href="/privacy" className="hover:text-white transition-colors" style={{ textDecoration: "none", color: "inherit" }}>Privacy Policy</Link>
           <Link href="/terms" className="hover:text-white transition-colors" style={{ textDecoration: "none", color: "inherit" }}>Terms of Service</Link>
           <a href="mailto:hello@example.com" className="hover:text-white transition-colors" style={{ textDecoration: "none", color: "inherit" }}>Contact</a>
         </div>
-        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px" }}>
+        <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "12px", textAlign: "center" }}>
           © {new Date().getFullYear()} AI Career Copilot. All rights reserved. Built for the modern engineer.
         </p>
       </footer>
