@@ -3,7 +3,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import NavBar from "@/components/NavBar";
+import Link from "next/link";
 
 const taskTypeColors: Record<string, { bg: string; color: string }> = {
   learn: { bg: "rgba(79,142,247,0.1)", color: "#4F8EF7" },
@@ -22,6 +22,7 @@ function RoadmapContent() {
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState("");
   const [expandedWeek, setExpandedWeek] = useState<number | null>(1);
+  const [durationWeeks, setDurationWeeks] = useState(8);
 
   useEffect(() => { fetchExistingRoadmap(); }, []);
 
@@ -53,14 +54,13 @@ function RoadmapContent() {
   }));
 
   const generateRoadmap = async () => {
-    if (!resumeId) { setError("Please upload and analyze your resume first."); return; }
     setGenerating(true);
     setError("");
     try {
       const res = await fetch("/api/roadmap/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ resumeId, targetRole: role, durationWeeks: 8 }),
+        body: JSON.stringify({ targetRole: role, durationWeeks }),
       });
       const data = await res.json();
       if (!data.success) throw new Error(data.error);
@@ -87,20 +87,15 @@ function RoadmapContent() {
 
   if (loading) {
     return (
-      <>
-        <NavBar />
         <div style={{ minHeight: "100vh", background: "var(--bg)", paddingTop: "80px", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <p style={{ color: "var(--text-muted)" }}>Loading roadmap...</p>
         </div>
-      </>
     );
   }
 
   return (
-    <>
-      <NavBar />
-      <main style={{ minHeight: "100vh", background: "var(--bg)", paddingTop: "80px" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 32px" }}>
+      <main style={{ minHeight: "100vh", background: "var(--bg)", padding: "0" }}>
+        <div style={{ maxWidth: "860px", margin: "0 auto", padding: "40px 32px" }}>
 
           {/* Header */}
           <div style={{ marginBottom: "40px" }}>
@@ -157,16 +152,27 @@ function RoadmapContent() {
             </div>
           )}
 
-          {/* Generate button */}
+          {/* Generate controls */}
           {weeks.length === 0 && (
-            <button
-              onClick={generateRoadmap}
-              disabled={generating}
-              className="btn-primary"
-              style={{ width: "100%", padding: "16px", fontSize: "16px", borderRadius: "12px", marginBottom: "32px" }}
-            >
-              {generating ? "🤖 Generating your roadmap..." : `Generate 8-Week Roadmap for ${role} →`}
-            </button>
+            <div className="card no-print" style={{ marginBottom: "32px", display: "flex", flexDirection: "column", gap: "16px" }}>
+              <label style={{ fontSize: "15px", fontWeight: 600, color: "var(--text)" }}>
+                Preparation Duration: {durationWeeks} Week{durationWeeks > 1 ? "s" : ""}
+              </label>
+              <input 
+                type="range" min="1" max="8" 
+                value={durationWeeks} 
+                onChange={(e) => setDurationWeeks(parseInt(e.target.value))}
+                style={{ accentColor: "#4F8EF7", cursor: "pointer" }}
+              />
+              <button
+                onClick={generateRoadmap}
+                disabled={generating}
+                className="btn-primary"
+                style={{ width: "100%", padding: "16px", fontSize: "16px", borderRadius: "12px", marginTop: "8px" }}
+              >
+                {generating ? "🤖 Generating your roadmap..." : `Generate ${durationWeeks}-Week Roadmap for ${role} →`}
+              </button>
+            </div>
           )}
 
           {/* Week Cards */}
@@ -291,19 +297,39 @@ function RoadmapContent() {
           </div>
 
           {/* Regenerate */}
+          {/* Regenerate & PDF Export */}
           {weeks.length > 0 && (
-            <button
-              onClick={generateRoadmap}
-              disabled={generating || !resumeId}
-              className="btn-ghost"
-              style={{ width: "100%", marginTop: "24px", fontSize: "14px" }}
-            >
-              {generating ? "Regenerating..." : "↻ Regenerate Roadmap"}
-            </button>
+            <div className="no-print" style={{ marginTop: "32px", display: "flex", flexDirection: "column", gap: "16px", background: "var(--bg-2)", padding: "24px", borderRadius: "16px", border: "1px solid var(--border)" }}>
+              <label style={{ fontSize: "14px", fontWeight: 600, color: "var(--text)" }}>
+                Adjust Duration: {durationWeeks} Week{durationWeeks > 1 ? "s" : ""}
+              </label>
+              <input 
+                type="range" min="1" max="8" 
+                value={durationWeeks} 
+                onChange={(e) => setDurationWeeks(parseInt(e.target.value))}
+                style={{ accentColor: "#4F8EF7", cursor: "pointer", marginBottom: "8px" }}
+              />
+              <div style={{ display: "flex", gap: "12px" }}>
+                <button
+                  onClick={generateRoadmap}
+                  disabled={generating}
+                  className="btn-ghost"
+                  style={{ flex: 1, fontSize: "14px" }}
+                >
+                  {generating ? "Regenerating..." : `↻ Regenerate`}
+                </button>
+                <button
+                  onClick={() => window.print()}
+                  className="btn-primary"
+                  style={{ flex: 1, fontSize: "14px", padding: "12px" }}
+                >
+                  Download PDF
+                </button>
+              </div>
+            </div>
           )}
         </div>
       </main>
-    </>
   );
 }
 

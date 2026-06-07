@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Analyze with Gemini
-    const analysis = await analyzeResume(rawText.slice(0, 8000));
+    const analysis = await analyzeResume(rawText.slice(0, 8000), targetRole);
 
     // Deactivate old resumes
     await prisma.resume.updateMany({

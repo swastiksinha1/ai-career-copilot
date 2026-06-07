@@ -1,8 +1,10 @@
 // src/app/page.tsx
 import Link from "next/link";
-import { SignInButton, SignUpButton, SignedIn, SignedOut } from "@clerk/nextjs";
+import { SignInButton, SignUpButton } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const { userId } = await auth();
   return (
     <main style={{ minHeight: "100vh", background: "var(--bg)", overflow: "hidden" }}>
       {/* Nav */}
@@ -19,19 +21,21 @@ export default function LandingPage() {
           Career Copilot
         </span>
         <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-          <SignedOut>
-            <SignInButton mode="modal">
-              <button className="btn-ghost">Sign In</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className="btn-primary">Get Started Free →</button>
-            </SignUpButton>
-          </SignedOut>
-          <SignedIn>
+          {!userId && (
+            <>
+              <SignInButton mode="modal">
+                <button className="btn-ghost">Sign In</button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="btn-primary">Get Started Free →</button>
+              </SignUpButton>
+            </>
+          )}
+          {userId && (
             <Link href="/dashboard">
               <button className="btn-primary">Go to Dashboard →</button>
             </Link>
-          </SignedIn>
+          )}
         </div>
       </nav>
 
@@ -79,20 +83,20 @@ export default function LandingPage() {
           and score your GitHub — all in one place.
         </p>
 
-        <SignedOut>
+        {!userId && (
           <SignUpButton mode="modal">
             <button className="btn-primary" style={{ fontSize: "17px", padding: "16px 40px" }}>
               Start for free →
             </button>
           </SignUpButton>
-        </SignedOut>
-        <SignedIn>
+        )}
+        {userId && (
           <Link href="/dashboard">
             <button className="btn-primary" style={{ fontSize: "17px", padding: "16px 40px" }}>
               Go to Dashboard →
             </button>
           </Link>
-        </SignedIn>
+        )}
 
         <p style={{ marginTop: "16px", fontSize: "13px", color: "var(--text-dim)" }}>
           No credit card required

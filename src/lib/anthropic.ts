@@ -25,7 +25,7 @@ const MODEL_NAME = "gemini-2.5-flash";
 // ─────────────────────────────────────────
 // RESUME ANALYSIS
 // ─────────────────────────────────────────
-export async function analyzeResume(resumeText: string) {
+export async function analyzeResume(resumeText: string, targetRole: string = "Software Engineer") {
   const genAI = getGeminiClient();
   const model = genAI.getGenerativeModel({
     model: MODEL_NAME,
@@ -36,16 +36,20 @@ export async function analyzeResume(resumeText: string) {
     }
   });
 
-  const prompt = `Analyze this resume and return ONLY a JSON object with this exact structure:
+  const prompt = `Analyze this resume against the target role of "${targetRole}".
+Evaluate how well the candidate's skills and experience match this specific role.
+Return ONLY a JSON object with this exact structure:
 {
   "skills": ["skill1", "skill2"],
   "experience": [{"title": "Job Title", "company": "Company", "years": 2}],
   "education": [{"degree": "B.Tech", "institution": "University"}],
-  "roleFitScore": {"Full Stack Developer": 75, "Backend Developer": 80},
-  "skillGaps": ["Docker", "System Design"],
-  "summary": "2-3 sentence career summary",
-  "fitScore": 75
+  "roleFitScore": {"${targetRole}": 85},
+  "skillGaps": ["Missing skill 1 for ${targetRole}", "Missing skill 2"],
+  "summary": "2-3 sentence career summary highlighting relevance to ${targetRole}",
+  "fitScore": 85
 }
+
+Be highly critical and realistic with the fitScore (0-100) based strictly on how well the resume matches a typical "${targetRole}" job.
 
 Resume:
 ${resumeText}`;
@@ -117,7 +121,7 @@ export async function scoreGithubProfile(
     model: MODEL_NAME,
     systemInstruction: "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
     generationConfig: {
-      temperature: 0.3,
+      temperature: 0.0,
       responseMimeType: "application/json",
     }
   });
@@ -125,30 +129,130 @@ export async function scoreGithubProfile(
   const prompt = `Score this GitHub profile and return ONLY a JSON object:
 {
   "overallScore": 72,
+  "profileName": "User Name",
   "breakdown": {
     "profileCompleteness": 15,
     "repositoryQuality": 25,
     "activityConsistency": 20,
     "projectDiversity": 12
   },
-  "suggestions": [
-    "Add a README to your top repository"
-  ],
+  "markdownFeedback": "### 🚀 Strengths\\n- Good repos\\n\\n### ⚠️ Primary Gap\\n- Add a README\\n\\n### 💡 Quick Win\\n- Pin repositories\\n\\n### 📈 Long-term Goal\\n- Contribute to open source\\n\\n### 🔍 Code Quality\\n- Clean commits\\n\\n### 🎯 Overall Impact\\n- Great potential",
   "topRepos": [
     {"name": "repo-name", "stars": 5, "description": "What it does"}
   ]
 }
 
+Make sure markdownFeedback is a comprehensive, beautifully formatted markdown string. You MUST provide exactly 6 to 8 distinct, bite-sized sections starting with "###".
+Examples of sections you could include:
+1. ### 🚀 Top Strengths
+2. ### ⚠️ Primary Gap
+3. ### 💡 Quick Win
+4. ### 📈 Long-term Goal
+5. ### 🔍 Code Quality
+6. ### 🎯 Overall Impact
+
+CRITICAL UI RULE: The text under EACH section MUST be extremely short (maximum 2-3 short sentences or 2 bullet points). We are displaying these in small, fixed-size isometric 3D cards. If you write too much text under a single heading, it will break the layout. Spread your feedback across more boxes rather than writing long paragraphs.
+
+CRITICAL JSON FORMATTING: You MUST ensure all newlines in the markdownFeedback string are properly escaped as \\n so the JSON is valid. Do not use raw newlines inside the string!
+
+CRITICAL GRADING RUBRIC (Be realistic but encouraging):
+- Focus on the QUALITY of the repositories, descriptions, and languages used rather than sheer quantity.
+- Do NOT heavily penalize candidates for having a low number of public repositories. A few high-quality projects are better than 50 empty ones.
+- 30-50: Beginner. Has a profile, maybe 1-2 basic projects, low activity.
+- 51-70: Intermediate. Good profile, a few solid projects with descriptions, some activity.
+- 71-85: Advanced. Very solid projects, good descriptions, stars, followers, clear tech stack focus.
+- 86-100: Expert. High impact open source, lots of stars, deep complexity.
+`;
+
+  const dataString = `
 Username: ${username}
+Name: ${profileData.name || "Unknown"}
 Public Repos: ${profileData.public_repos}
 Followers: ${profileData.followers}
 Bio: ${profileData.bio || "None"}
-Top Repos: ${JSON.stringify(repos.slice(0, 5).map((r) => ({
+Top Repos: ${JSON.stringify([...repos].sort((a, b) => (b.stargazers_count || 0) - (a.stargazers_count || 0)).slice(0, 5).map((r) => ({
   name: r.name,
   description: r.description,
   stars: r.stargazers_count,
   language: r.language,
-})))}`;
+})))}\n`;
+
+  const finalPrompt = prompt + dataString;
+
+
+  const result = await model.generateContent(finalPrompt);
+  const text = result.response.text();
+  const clean = text.replace(/```json|```/g, "").trim();
+  return JSON.parse(clean);
+}
+
+// ─────────────────────────────────────────
+// LINKEDIN SCORING
+// ─────────────────────────────────────────
+export async function scoreLinkedinProfile(profileText: string) {
+  const genAI = getGeminiClient();
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    systemInstruction: "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    generationConfig: {
+      temperature: 0.3,
+      responseMimeType: "application/json",
+    }
+  });
+
+  const prompt = `Score this LinkedIn profile and return ONLY a JSON object:
+{
+  "overallScore": 75,
+  "profileName": "Extracted Name from PDF",
+  "breakdown": {
+    "experienceImpact": 25,
+    "summaryQuality": 15,
+    "skillsRelevance": 20,
+    "completeness": 15
+  },
+  "markdownFeedback": "### 🚀 Strengths\\n- Strong experience\\n\\n### ⚠️ Areas for Improvement\\n- Quantify your impact"
+}
+
+Extract the candidate's real name from the PDF text for 'profileName'.
+Make sure markdownFeedback is a comprehensive, beautifully formatted markdown string with headers, bullet points, and actionable advice to improve their score.
+Evaluate strictly based on best practices for tech industry LinkedIn profiles.
+
+Profile Text (from PDF export):
+${profileText}`;
+
+  const result = await model.generateContent(prompt);
+  const text = result.response.text();
+  const clean = text.replace(/```json|```/g, "").trim();
+  return JSON.parse(clean);
+}
+
+// ─────────────────────────────────────────
+// MCQ QUIZ GENERATOR
+// ─────────────────────────────────────────
+export async function generateQuiz(targetRole: string, numQuestions: number = 5) {
+  const genAI = getGeminiClient();
+  const model = genAI.getGenerativeModel({
+    model: MODEL_NAME,
+    systemInstruction: "You are an expert technical interviewer. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    generationConfig: {
+      temperature: 0.7,
+      responseMimeType: "application/json",
+    }
+  });
+
+  const prompt = `Create a ${numQuestions}-question multiple choice quiz for a "${targetRole}". 
+The questions should cover core technical concepts, practical scenarios, and best practices relevant to this role.
+Vary the difficulty from intermediate to advanced.
+
+Return ONLY a JSON array with this exact structure:
+[
+  {
+    "questionText": "What is the primary purpose of...?",
+    "options": ["Option A", "Option B", "Option C", "Option D"],
+    "correctOptionIndex": 1,
+    "explanation": "Option B is correct because..."
+  }
+]`;
 
   const result = await model.generateContent(prompt);
   const text = result.response.text();

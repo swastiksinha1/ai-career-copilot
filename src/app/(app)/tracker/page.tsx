@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import NavBar from "@/components/NavBar";
+import Link from "next/link";
 
 const STATUSES = ["WISHLIST", "APPLIED", "SCREEN", "INTERVIEW", "OFFER", "REJECTED"];
 
@@ -76,10 +76,8 @@ export default function TrackerPage() {
   }), {} as Record<string, number>);
 
   return (
-    <>
-      <NavBar />
-      <main style={{ minHeight: "100vh", background: "var(--bg)", paddingTop: "80px" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "40px 32px" }}>
+      <main style={{ minHeight: "100vh", background: "var(--bg)", padding: "0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 32px" }}>
 
           {/* Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "40px" }}>
@@ -293,6 +291,5 @@ export default function TrackerPage() {
           )}
         </div>
       </main>
-    </>
   );
 }

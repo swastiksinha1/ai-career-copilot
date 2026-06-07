@@ -31,6 +31,8 @@ model User {
   roadmaps     Roadmap[]
   applications Application[]
   githubScores GithubScore[]
+  linkedinScores LinkedinScore[]
+  quizAttempts QuizAttempt[]
 
   @@index([clerkId])
 }
@@ -152,8 +154,9 @@ model GithubScore {
   githubHandle String
   
   overallScore Int                            // 0-100
+  profileName  String?
   breakdown    Json     @default("{}")        // {readme: 20, activity: 30, ...}
-  suggestions  Json     @default("[]")        // ["Add README to X repo", ...]
+  markdownFeedback String? @db.Text           // Detailed markdown feedback
   topRepos     Json     @default("[]")        // [{name, stars, description}, ...]
   
   // Cache control — re-score after 24hrs
@@ -163,4 +166,43 @@ model GithubScore {
 
   @@index([userId])
   @@index([githubHandle])
+}
+
+// ─────────────────────────────────────────
+// LINKEDIN SCORE
+// AI evaluation from uploaded PDF
+// ─────────────────────────────────────────
+model LinkedinScore {
+  id           String   @id @default(cuid())
+  userId       String
+  
+  overallScore Int                            // 0-100
+  profileName  String?
+  breakdown    Json     @default("{}")        // {experience: 25, summary: 20, ...}
+  markdownFeedback String? @db.Text           // Detailed markdown feedback
+  
+  scoredAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────
+// QUIZ ATTEMPT
+// User's role-based MCQ quiz history
+// ─────────────────────────────────────────
+model QuizAttempt {
+  id             String   @id @default(cuid())
+  userId         String
+  targetRole     String
+  
+  score          Int
+  totalQuestions Int
+  
+  createdAt      DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
