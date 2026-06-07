@@ -1,0 +1,166 @@
+// prisma/schema.prisma
+// Run: npx prisma db push  (to sync with Neon.tech)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─────────────────────────────────────────
+// USER PROFILE
+// Clerk handles auth — we store extra data here
+// ─────────────────────────────────────────
+model User {
+  id          String   @id @default(cuid())
+  clerkId     String   @unique   // Clerk user ID
+  email       String   @unique
+  name        String?
+  targetRole  String?            // e.g. "Full Stack Developer"
+  githubUrl   String?
+  linkedinUrl String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  resumes      Resume[]
+  roadmaps     Roadmap[]
+  applications Application[]
+  githubScores GithubScore[]
+
+  @@index([clerkId])
+}
+
+// ─────────────────────────────────────────
+// RESUME
+// Stores parsed resume data + AI analysis
+// ─────────────────────────────────────────
+model Resume {
+  id           String   @id @default(cuid())
+  userId       String
+  fileName     String
+  rawText      String   @db.Text    // Extracted PDF text
+  
+  // AI Analysis Results (stored as JSON)
+  skills       Json     @default("[]")       // ["React", "Node.js", ...]
+  experience   Json     @default("[]")       // [{title, company, years}, ...]
+  education    Json     @default("[]")       // [{degree, institution}, ...]
+  roleFitScore Json     @default("{}")       // {"Full Stack Dev": 78, ...}
+  skillGaps    Json     @default("[]")       // ["System Design", "Docker", ...]
+  summary      String?  @db.Text             // AI-generated summary
+  
+  isActive     Boolean  @default(true)       // Only one active resume at a time
+  analyzedAt   DateTime?
+  createdAt    DateTime @default(now())
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmaps Roadmap[]
+
+  @@index([userId])
+}
+
+// ─────────────────────────────────────────
+// ROADMAP
+// AI-generated week-by-week prep plan
+// ─────────────────────────────────────────
+model Roadmap {
+  id         String   @id @default(cuid())
+  userId     String
+  resumeId   String
+  targetRole String
+  durationWeeks Int   @default(8)
+  
+  weeks      RoadmapWeek[]
+  
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resume Resume @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model RoadmapWeek {
+  id          String   @id @default(cuid())
+  roadmapId   String
+  weekNumber  Int
+  title       String                         // "Week 1: Core DSA"
+  focus       String                         // Main topic
+  tasks       Json     @default("[]")        // [{task, type, completed, resources}]
+  isCompleted Boolean  @default(false)
+  completedAt DateTime?
+
+  roadmap Roadmap @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  @@index([roadmapId])
+  @@unique([roadmapId, weekNumber])
+}
+
+// ─────────────────────────────────────────
+// APPLICATION TRACKER
+// Kanban: Applied → Interview → Offer / Rejected
+// ─────────────────────────────────────────
+model Application {
+  id          String            @id @default(cuid())
+  userId      String
+  company     String
+  role        String
+  jobUrl      String?
+  status      ApplicationStatus @default(APPLIED)
+  
+  // Timeline
+  appliedAt   DateTime          @default(now())
+  interviewAt DateTime?
+  offerAt     DateTime?
+  
+  // Notes
+  notes       String?  @db.Text
+  salaryRange String?
+  location    String?
+  isRemote    Boolean  @default(false)
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+enum ApplicationStatus {
+  WISHLIST
+  APPLIED
+  SCREEN
+  INTERVIEW
+  OFFER
+  REJECTED
+  WITHDRAWN
+}
+
+// ─────────────────────────────────────────
+// GITHUB SCORE
+// Cached GitHub profile analysis
+// ─────────────────────────────────────────
+model GithubScore {
+  id           String   @id @default(cuid())
+  userId       String
+  githubHandle String
+  
+  overallScore Int                            // 0-100
+  breakdown    Json     @default("{}")        // {readme: 20, activity: 30, ...}
+  suggestions  Json     @default("[]")        // ["Add README to X repo", ...]
+  topRepos     Json     @default("[]")        // [{name, stars, description}, ...]
+  
+  // Cache control — re-score after 24hrs
+  scoredAt     DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([githubHandle])
+}
