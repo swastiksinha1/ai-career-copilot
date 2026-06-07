@@ -13,19 +13,33 @@
   </p>
 </div>
 
+---
+
 ## 🌟 Overview
 
 **AI Career Copilot** is an end-to-end placement operating system designed to give engineers an unfair advantage in the modern job market. Effortlessly tailor resumes, simulate interviews, and track applications in real-time. Let our AI extract knowledge to automate your job hunt while you focus on crushing interviews.
 
+## 🎯 Problem Statement
+
+The modern tech job hunt is overwhelming. Candidates constantly struggle with:
+- **Resume Blind Spots:** Not knowing why their resume isn't passing ATS filters.
+- **Context Switching:** Managing spreadsheets, emails, and job boards across a dozen tabs.
+- **Interview Anxiety:** Going into technical interviews without realistic, role-specific practice.
+- **Time Constraints:** Spending hours drafting unique cover letters for every application.
+
+**AI Career Copilot** solves this by unifying the entire pipeline into a single, AI-native platform that parses your experience, tracks your applications, and actively coaches you.
+
 ## ✨ Core Features
 
-- **📄 AI Resume Analysis:** Upload your PDF resume and let our AI parse your experience, extract your skills, score your role-fit against industry standards, and identify the exact gaps holding you back.
-- **🎯 Intelligent Job Matching:** Paste a target Job Description. The AI will instantly compare it to your resume, provide a highly-tailored match score, and surface missing keywords to help you beat the ATS.
-- **🐙 GitHub & LinkedIn Scorer:** Drop in your profile links to receive specific, actionable feedback designed to boost your GitHub and LinkedIn profile scores and attract technical recruiters.
-- **🗺️ Personalized Roadmaps:** Generate a comprehensive, week-by-week interview prep plan tailored strictly to your skill gaps and target company.
-- **📋 Unified Application Tracker:** A high-performance Kanban board built to track your entire pipeline from *Wishlist* to *Offer*. Store notes, dates, and statuses so you never lose track again.
-- **🎙️ Mock Interviews:** Dynamic, role-specific technical and behavioral questions evaluated with real-time feedback to drastically improve your interview performance.
-- **✍️ Cover Letter Engine:** Draft highly-tailored, professional cover letters automatically based on your parsed resume data and target job descriptions.
+| Feature | Description |
+| --- | --- |
+| **📄 AI Resume Analysis** | Upload your PDF resume and let our AI parse your experience, extract your skills, score your role-fit against industry standards, and identify the exact gaps holding you back. |
+| **🎯 Intelligent Job Matching** | Paste a target Job Description. The AI will instantly compare it to your resume, provide a highly-tailored match score, and surface missing keywords to help you beat the ATS. |
+| **🐙 GitHub & LinkedIn Scorer** | Drop in your profile links to receive specific, actionable feedback designed to boost your GitHub and LinkedIn profile scores and attract technical recruiters. |
+| **🗺️ Personalized Roadmaps** | Generate a comprehensive, week-by-week interview prep plan tailored strictly to your skill gaps and target company. |
+| **📋 Unified App Tracker** | A high-performance Kanban board built to track your entire pipeline from *Wishlist* to *Offer*. Store notes, dates, and statuses so you never lose track again. |
+| **🎙️ Mock Interviews** | Dynamic, role-specific technical and behavioral questions evaluated with real-time feedback to drastically improve your interview performance. |
+| **✍️ Cover Letter Engine** | Draft highly-tailored, professional cover letters automatically based on your parsed resume data and target job descriptions. |
 
 ## 🛠️ Technology Stack
 
@@ -37,6 +51,22 @@
 | **ORM** | [Prisma](https://prisma.io) | Typescript-first database toolkit. |
 | **Auth** | [Clerk](https://clerk.dev) | Secure, drop-in authentication and user management. |
 | **AI** | Google Gemini | Gemini 2.5 Flash powering the resume analysis and mock interviews. |
+
+## 📂 Project Structure
+
+```text
+ai-career-copilot/
+├── 📁 prisma/             # Database schema and migrations
+├── 📁 public/             # Static assets (images, fonts)
+├── 📁 src/
+│   ├── 📁 app/            # Next.js App Router pages (Home, Dashboard, API routes)
+│   ├── 📁 components/     # Reusable React UI components (Tailwind, Shadcn)
+│   ├── 📁 lib/            # Utility functions and API wrappers (Prisma, Gemini)
+│   └── 📄 middleware.ts   # Clerk authentication middleware
+├── 📄 .env                # Environment variables (Ignored in Git)
+├── 📄 tailwind.config.ts  # Tailwind CSS theme configuration
+└── 📄 next.config.ts      # Next.js build configuration
+```
 
 ## 🚀 Getting Started
 
@@ -88,11 +118,43 @@ Make sure you have the following installed and set up:
 
 Open [http://localhost:3000](http://localhost:3000) to view your new Placement OS.
 
-## 📜 License
+## 🌟 Future Improvements
 
-Distributed under the MIT License. See `LICENSE` for more information.
+| Feature | Status |
+| --- | --- |
+| **🎙️ Voice-to-Text Mock Interviews** | 🚧 Planned |
+| **🌐 Chrome Extension for Job Boards** | 🚧 Planned |
+| **🤖 Automated Email Follow-ups** | 🚧 Planned |
+| **📊 Advanced Application Analytics** | 🚧 Planned |
 
----
-<div align="center">
-  Built with precision by <a href="https://github.com/swastiksinha1">Swastik Sinha</a>.
-</div>
+## 📈 Learning Outcomes
+
+| Category | Skills Acquired |
+| --- | --- |
+| **Full Stack Next.js** | Mastered App Router, Server Actions, and Server Components |
+| **AI Integration** | Engineered complex LLM prompts and parsed structured JSON outputs via Gemini API |
+| **Database Architecture** | Designed relational schemas in Prisma and integrated with PostgreSQL |
+| **Authentication Flow** | Implemented secure route protection and user management via Clerk |
+
+## 👨‍💻 Developer & Credits
+
+| Role | Details |
+| --- | --- |
+| **Developer** | Swastik Sinha |
+| **Title** | Full Stack Developer |
+| **GitHub** | [@swastiksinha1](https://github.com/swastiksinha1) |
+
+## ⭐ Support & Contribution
+
+| Action | Description |
+| --- | --- |
+| **⭐ Star** | Star the repository to show support |
+| **🍴 Fork** | Fork the project to experiment or build upon it |
+| **🛠️ Contribute** | Submit pull requests to contribute new features |
+
+## 📄 License & Repository Details
+
+| Category | Details |
+| --- | --- |
+| **License** | This project is licensed under the MIT License. |
+| **GitHub Topics** | `nextjs` `ai` `gemini` `career` `resume-builder` `typescript` `prisma` `tailwind` |
