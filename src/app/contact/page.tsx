@@ -12,23 +12,32 @@ export default function ContactPage() {
           Have a question, feedback, or just want to say hi? Reach out through any of the channels below.
         </p>
 
+        <style>{`
+          .contact-card {
+            background: rgba(255,255,255,0.025);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 16px;
+            padding: 18px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            transition: border-color 0.2s ease, transform 0.2s ease;
+          }
+          .contact-card:hover {
+            border-color: rgba(127,119,221,0.4);
+            transform: translateY(-2px);
+          }
+        `}</style>
+
         <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
           {[
             { label: "Instagram", handle: "@ig_swastik", href: "https://instagram.com/ig_swastik" },
             { label: "GitHub", handle: "github.com/swastiksinha1", href: "https://github.com" },
             { label: "LinkedIn", handle: "linkedin.com/in/swastik", href: "https://linkedin.com" },
           ].map(({ label, handle, href }) => (
-            <a key={label} href={href} target="_blank" rel="noopener noreferrer" style={{
-              background: "rgba(255,255,255,0.025)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              borderRadius: 16, padding: "18px 24px",
-              display: "flex", justifyContent: "space-between", alignItems: "center",
-              textDecoration: "none", color: "#fff",
-              transition: "border-color 0.2s ease, transform 0.2s ease",
-            }}
-              onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(127,119,221,0.4)"; (e.currentTarget as HTMLElement).style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = "rgba(255,255,255,0.07)"; (e.currentTarget as HTMLElement).style.transform = "translateY(0)"; }}
-            >
+            <a key={label} href={href} target="_blank" rel="noopener noreferrer" className="contact-card">
               <span style={{ fontFamily: "DM Sans, sans-serif", fontSize: 13, color: "rgba(255,255,255,0.45)", textTransform: "uppercase", letterSpacing: "0.1em" }}>{label}</span>
               <span style={{ fontFamily: "Syne, sans-serif", fontSize: 15, fontWeight: 600, color: "#7F77DD" }}>{handle}</span>
             </a>
