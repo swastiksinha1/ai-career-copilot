@@ -31,51 +31,81 @@ The modern tech job hunt is overwhelming. Candidates constantly struggle with:
 
 ## ✨ Core Features Deep Dive
 
-### 📄 1. AI Resume Analysis
+### <u>📄 1. AI Resume Analysis</u>
+
 The cornerstone of your application prep.
+
 - **PDF Parsing**: Securely upload your resume in PDF format. The system extracts raw text and structures it into distinct sections (experience, education, skills).
 - **Role Alignment**: Input your target role. The AI evaluates how well your current resume positions you for that specific title.
 - **Actionable Feedback**: Receive a quantifiable score (0-100) along with bullet-point critiques on action verbs, quantifiable metrics, and formatting.
 - **Skill Gap Identification**: Discovers critical technical and soft skills missing from your profile based on industry standards for your target role.
 
-### 🎯 2. ATS Job Description Matcher
+<br/>
+
+### <u>🎯 2. ATS Job Description Matcher</u>
+
 Beat the Applicant Tracking Systems (ATS) before you even apply.
+
 - **Direct Comparison**: Paste a target job description and select your uploaded resume.
 - **Keyword Extraction**: The system identifies mandatory and preferred skills required by the employer.
 - **Match Scoring**: Generates a percentage match indicating your likelihood of passing automated ATS filters.
 - **Missing Keywords**: Highlights the exact words and phrases you need to inject into your resume to trigger a higher ATS ranking.
 
-### ✍️ 3. Intelligent Cover Letter Generator
+<br/>
+
+### <u>✍️ 3. Intelligent Cover Letter Generator</u>
+
 Stop writing cover letters from scratch.
+
 - **Context-Aware Drafting**: Uses your parsed resume data and the specific target job description to write a highly tailored cover letter.
 - **Professional Tone**: Generates compelling narratives that connect your past achievements directly to the employer's needs.
 - **Instant Export**: Copy the generated letter with one click and drop it directly into your application.
 
-### 🎙️ 4. AI Mock Interviews
+<br/>
+
+### <u>🎙️ 4. AI Mock Interviews</u>
+
 Simulate the high-pressure environment of a real interview.
+
 - **Role & JD Specific**: The AI generates technical, behavioral, and situational questions strictly based on your provided job description and target role.
 - **Interactive Q&A**: Type your answers to the AI's questions in a chat-like interface.
 - **Real-time Evaluation**: After the interview, receive a comprehensive breakdown of your performance, including areas of strength, red flags, and suggested perfect answers for each question.
 
-### 🐙 5. GitHub & LinkedIn Profile Scorer
+<br/>
+
+### <u>🐙 5. GitHub & LinkedIn Profile Scorer</u>
+
 Your public profiles are your passive resume. Make them count.
+
 - **URL Analysis**: Input your LinkedIn and GitHub URLs.
 - **Recruiter Perspective**: The AI analyzes your profile from the perspective of a technical recruiter, looking for optimized headlines, detailed summaries, and project visibility.
 - **Optimization Checklist**: Provides a step-by-step checklist to increase your search visibility and inbound recruiter reach-outs.
 
-### 📋 6. Application Tracker (Kanban Board)
+<br/>
+
+### <u>📋 6. Application Tracker (Kanban Board)</u>
+
 Never lose track of where you are in the pipeline.
+
 - **Visual Pipeline**: A drag-and-drop Kanban board with columns for *Wishlist*, *Applied*, *Interviewing*, *Offer*, and *Rejected*.
 - **Detail Storage**: Save the job title, company, salary range, and specific notes for every application.
 - **Centralized Hub**: Acts as your single source of truth during the chaotic job hunting process.
 
-### 🗺️ 7. Personalized Career Roadmaps
+<br/>
+
+### <u>🗺️ 7. Personalized Career Roadmaps</u>
+
 Don't know what to study? Let the AI build your syllabus.
+
 - **Custom Curriculums**: Based on your identified skill gaps and target role, the AI generates a structured, week-by-week study plan.
 - **Resource Recommendations**: Suggests specific topics, projects, and algorithms to master before your big interview.
 
-### 🧭 8. Target Role Quiz
+<br/>
+
+### <u>🧭 8. Target Role Quiz</u>
+
 Not sure what role you're best suited for? Take our interactive assessment.
+
 - **Skill Evaluation**: A dynamic quiz that assesses your current technical stack, soft skills, and interests.
 - **Role Recommendations**: Based on your answers, the AI suggests the most optimal tech roles (e.g., Frontend Developer, Data Engineer, DevOps) that match your profile.
 - **Career Trajectory**: Provides a brief overview of what each recommended role entails and the typical expectations.
