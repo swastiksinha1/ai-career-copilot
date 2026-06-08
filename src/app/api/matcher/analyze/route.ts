@@ -1,9 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { GoogleGenerativeAI } from "@google/generative-ai";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { getGeminiClient } from "@/lib/anthropic";
 
 export async function POST(req: Request) {
   try {
@@ -23,6 +21,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Please upload a resume first." }, { status: 400 });
     }
 
+    const genAI = getGeminiClient();
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     const prompt = `You are an expert ATS (Applicant Tracking System) and senior technical recruiter.

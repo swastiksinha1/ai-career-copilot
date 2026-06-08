@@ -3,17 +3,41 @@
 
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const apiKeys = (process.env.GEMINI_API_KEYS || process.env.GEMINI_API_KEY || "")
-  .split(",")
-  .map((key) => key.trim())
-  .filter((key) => key.length > 0);
+const apiKeys: string[] = [];
+
+// 1. Load from GEMINI_API_KEY (comma-separated or single key)
+const mainKey = process.env.GEMINI_API_KEY || "";
+if (mainKey) {
+  mainKey.split(",").forEach(k => {
+    const trimmed = k.trim();
+    if (trimmed && !apiKeys.includes(trimmed)) apiKeys.push(trimmed);
+  });
+}
+
+// 2. Load from GEMINI_API_KEYS (comma-separated list)
+const keysList = process.env.GEMINI_API_KEYS || "";
+if (keysList) {
+  keysList.split(",").forEach(k => {
+    const trimmed = k.trim();
+    if (trimmed && !apiKeys.includes(trimmed)) apiKeys.push(trimmed);
+  });
+}
+
+// 3. Load from separate individual keys: GEMINI_API_KEY_1, GEMINI_API_KEY_2, etc. (up to 20 keys)
+for (let i = 1; i <= 20; i++) {
+  const individualKey = process.env[`GEMINI_API_KEY_${i}`];
+  if (individualKey) {
+    const trimmed = individualKey.trim();
+    if (trimmed && !apiKeys.includes(trimmed)) apiKeys.push(trimmed);
+  }
+}
 
 const geminiClients = apiKeys.map((key) => new GoogleGenerativeAI(key));
 let currentClientIndex = 0;
 
-function getGeminiClient() {
+export function getGeminiClient() {
   if (geminiClients.length === 0) {
-    throw new Error("No GEMINI API clients configured. Please set GEMINI_API_KEYS or GEMINI_API_KEY in .env");
+    throw new Error("No GEMINI API clients configured. Please set GEMINI_API_KEY or GEMINI_API_KEY_1, GEMINI_API_KEY_2 etc. in your environment variables.");
   }
   const client = geminiClients[currentClientIndex];
   currentClientIndex = (currentClientIndex + 1) % geminiClients.length;

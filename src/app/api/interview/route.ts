@@ -1,9 +1,7 @@
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
 import { prisma } from "@/lib/prisma";
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+import { getGeminiClient } from "@/lib/anthropic";
 
 export async function POST(req: Request) {
   try {
@@ -18,6 +16,7 @@ export async function POST(req: Request) {
     });
     const activeResume = user?.resumes[0];
 
+    const genAI = getGeminiClient();
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     if (mode === "question") {
