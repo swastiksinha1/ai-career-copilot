@@ -245,3 +245,120 @@ h1, h2, h3, h4, h5 {
   body { background: white !important; color: black !important; }
   .card { border: none !important; box-shadow: none !important; }
 }
+
+/* Deep Space Landing Page CSS */
+.landing-page-theme {
+  --accent: #7F77DD;
+  --accent-blue: #378ADD;
+  --bg: #080810;
+  --bg-card: rgba(255, 255, 255, 0.03);
+  --border-card: rgba(255, 255, 255, 0.08);
+  --border-hover: rgba(127, 119, 221, 0.5);
+  background: var(--bg);
+  color: #fff;
+  overflow-x: hidden;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes pulse-star {
+  0%, 100% { opacity: 0.2; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.4); }
+}
+
+@keyframes drift {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-600px); }
+}
+
+.landing-page-theme .shimmer-text {
+  background: linear-gradient(90deg, #7F77DD, #85B7EB, #c084fc, #7F77DD);
+  background-size: 300% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+.landing-page-theme .glass-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-card);
+  border-radius: 16px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.landing-page-theme .glass-card:hover {
+  border-color: var(--border-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 32px rgba(83, 74, 183, 0.2);
+}
+
+@media (hover: none) {
+  .landing-page-theme .glass-card:hover {
+    transform: none;
+    box-shadow: none;
+    border-color: var(--border-card);
+  }
+}
+
+.landing-page-theme .btn-primary,
+.landing-page-theme .btn-ghost {
+  background: #150f1d !important;
+  border-radius: 20px !important;
+  box-shadow: 8px 8px 16px rgba(0,0,0,0.8), -8px -8px 16px rgba(47, 31, 60, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  cursor: pointer !important;
+  padding: 14px 32px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  transition: all 0.3s cubic-bezier(0.22, 1.4, 0.36, 1) !important;
+}
+
+.landing-page-theme .btn-primary:hover,
+.landing-page-theme .btn-ghost:hover {
+  box-shadow: 12px 12px 24px rgba(0,0,0,0.9), -12px -12px 24px rgba(47, 31, 60, 0.9) !important;
+  transform: translateY(-2px) !important;
+}
+
+.landing-page-theme .btn-primary:active,
+.landing-page-theme .btn-ghost:active {
+  transform: scale(0.97) translateY(1px) !important;
+  box-shadow: 4px 4px 12px rgba(0,0,0,0.9), -4px -4px 12px rgba(47, 31, 60, 0.8) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-page-theme *, .landing-page-theme .shimmer-text {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ── Landing page: all button pop animations ── */
+@keyframes btnPopIn {
+  0%   { opacity: 0; transform: scale(0.82) translateY(6px); }
+  65%  { transform: scale(1.06) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.landing-page-theme button {
+  animation: btnPopIn 0.5s cubic-bezier(0.22, 1.4, 0.36, 1) both;
+}
+
+.landing-page-theme button:hover {
+  transform: translateY(-3px) scale(1.03);
+  transition: transform 0.25s cubic-bezier(0.22, 1.4, 0.36, 1),
+              box-shadow 0.25s ease !important;
+}
+
+.landing-page-theme button:active {
+  transform: scale(0.96) translateY(1px) !important;
+  transition-duration: 0.1s !important;
+}
