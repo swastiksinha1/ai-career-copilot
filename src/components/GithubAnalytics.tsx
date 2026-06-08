@@ -124,8 +124,8 @@ export function GithubAnalytics({ initialScore }: { initialScore: any }) {
                 {score.markdownFeedback.split(/(?=###)/).map((section: string, idx: number) => {
                   if (!section.trim()) return null;
                   return (
-                    <div key={idx} className="card animate-fade-up" style={{ padding: "32px", position: "relative", overflow: "hidden", animationDelay: `${0.1 * idx}s`, display: "flex", flexDirection: "column", height: "320px" }}>
-                      <div style={{ position: "relative", zIndex: 1, flex: 1, overflow: "hidden" }}>
+                    <div key={idx} className="card animate-fade-up" style={{ padding: "32px", position: "relative", overflow: "hidden", animationDelay: `${0.1 * idx}s`, display: "flex", flexDirection: "column", height: "100%", minHeight: "280px" }}>
+                      <div style={{ position: "relative", zIndex: 1, flex: 1 }}>
                         <ReactMarkdown components={markdownComponents}>
                           {section}
                         </ReactMarkdown>

@@ -41,8 +41,11 @@ export async function POST(req: NextRequest) {
     if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
 
     const activeResume = user.resumes[0];
-    const skillGaps = activeResume ? (activeResume.skillGaps as string[]) : [];
-    const currentSkills = activeResume ? (activeResume.skills as string[]) : [];
+    if (!activeResume) {
+      return NextResponse.json({ error: "Please upload and analyze your resume first to generate a personalized roadmap." }, { status: 400 });
+    }
+    const skillGaps = activeResume.skillGaps as string[];
+    const currentSkills = activeResume.skills as string[];
 
     const weeks = await generateRoadmap(targetRole, skillGaps, currentSkills, durationWeeks);
 

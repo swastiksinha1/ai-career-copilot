@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { analyzeResume } from "@/lib/anthropic";
-import { PDFParse } from "pdf-parse";
+const pdfParse = require("pdf-parse");
 
 export async function POST(req: NextRequest) {
   try {
@@ -22,9 +22,9 @@ export async function POST(req: NextRequest) {
     const buffer = Buffer.from(await file.arrayBuffer());
     let rawText = "";
     try {
-      const parser = new PDFParse({ data: buffer });
-      const textResult = await parser.getText();
-      rawText = textResult.text.trim();
+      const pdfParseFn = typeof pdfParse === "function" ? pdfParse : pdfParse.default;
+      const parsed = await pdfParseFn(buffer);
+      rawText = parsed.text.trim();
     } catch (err) {
       console.error("PDF Parse error:", err);
       return NextResponse.json({ success: false, error: "Failed to read PDF. Please ensure it's a readable PDF." }, { status: 400 });

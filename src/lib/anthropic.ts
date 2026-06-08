@@ -22,20 +22,31 @@ function getGeminiClient() {
 
 const MODEL_NAME = "gemini-2.5-flash";
 
+async function generateContentWithRetry(prompt: string, systemInstruction: string, generationConfig: any) {
+  let lastError;
+  const maxRetries = Math.max(3, apiKeys.length);
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      const genAI = getGeminiClient();
+      const model = genAI.getGenerativeModel({ model: MODEL_NAME, systemInstruction, generationConfig });
+      const result = await model.generateContent(prompt);
+      return result.response.text();
+    } catch (error: any) {
+      lastError = error;
+      console.warn(`Gemini API Error (Attempt ${i + 1}/${maxRetries}):`, error.message);
+      // Wait before retrying (exponential backoff)
+      if (i < maxRetries - 1) {
+        await new Promise(res => setTimeout(res, 1500 * Math.pow(2, i)));
+      }
+    }
+  }
+  throw lastError;
+}
+
 // ─────────────────────────────────────────
 // RESUME ANALYSIS
 // ─────────────────────────────────────────
 export async function analyzeResume(resumeText: string, targetRole: string = "Software Engineer") {
-  const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    systemInstruction: "You are an expert tech recruiter. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
-    generationConfig: {
-      temperature: 0.3,
-      responseMimeType: "application/json",
-    }
-  });
-
   const prompt = `Analyze this resume against the target role of "${targetRole}".
 Evaluate how well the candidate's skills and experience match this specific role.
 Return ONLY a JSON object with this exact structure:
@@ -54,8 +65,12 @@ Be highly critical and realistic with the fitScore (0-100) based strictly on how
 Resume:
 ${resumeText}`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = await generateContentWithRetry(
+    prompt,
+    "You are an expert tech recruiter. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    { temperature: 0.3, responseMimeType: "application/json" }
+  );
+  
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
@@ -69,16 +84,6 @@ export async function generateRoadmap(
   currentSkills: string[],
   durationWeeks: number = 8
 ) {
-  const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    systemInstruction: "You are an expert career coach. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
-    generationConfig: {
-      temperature: 0.3,
-      responseMimeType: "application/json",
-    }
-  });
-
   const prompt = `Create a ${durationWeeks}-week preparation roadmap and return ONLY a JSON array:
 [
   {
@@ -102,8 +107,11 @@ Skill Gaps: ${skillGaps.join(", ")}
 
 Generate exactly ${durationWeeks} weeks with 3-5 tasks each.`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = await generateContentWithRetry(
+    prompt,
+    "You are an expert career coach. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    { temperature: 0.3, responseMimeType: "application/json" }
+  );
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
@@ -116,16 +124,6 @@ export async function scoreGithubProfile(
   repos: any[],
   profileData: any
 ) {
-  const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    systemInstruction: "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
-    generationConfig: {
-      temperature: 0.0,
-      responseMimeType: "application/json",
-    }
-  });
-
   const prompt = `Score this GitHub profile and return ONLY a JSON object:
 {
   "overallScore": 72,
@@ -141,6 +139,8 @@ export async function scoreGithubProfile(
     {"name": "repo-name", "stars": 5, "description": "What it does"}
   ]
 }
+
+CRITICAL RULE: The values in the breakdown object MUST each be out of a maximum of 25, and their sum MUST exactly equal the overallScore (which is out of 100). Do NOT output any breakdown score greater than 25.
 
 Make sure markdownFeedback is a comprehensive, beautifully formatted markdown string. You MUST provide exactly 6 to 8 distinct, bite-sized sections starting with "###".
 Examples of sections you could include:
@@ -175,13 +175,17 @@ Top Repos: ${JSON.stringify([...repos].sort((a, b) => (b.stargazers_count || 0) 
   description: r.description,
   stars: r.stargazers_count,
   language: r.language,
-})))}\n`;
+})))}
+`;
 
   const finalPrompt = prompt + dataString;
 
-
-  const result = await model.generateContent(finalPrompt);
-  const text = result.response.text();
+  const text = await generateContentWithRetry(
+    finalPrompt,
+    "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    { temperature: 0.0, responseMimeType: "application/json" }
+  );
+  
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
@@ -190,16 +194,6 @@ Top Repos: ${JSON.stringify([...repos].sort((a, b) => (b.stargazers_count || 0) 
 // LINKEDIN SCORING
 // ─────────────────────────────────────────
 export async function scoreLinkedinProfile(profileText: string) {
-  const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    systemInstruction: "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
-    generationConfig: {
-      temperature: 0.3,
-      responseMimeType: "application/json",
-    }
-  });
-
   const prompt = `Score this LinkedIn profile and return ONLY a JSON object:
 {
   "overallScore": 75,
@@ -220,8 +214,11 @@ Evaluate strictly based on best practices for tech industry LinkedIn profiles.
 Profile Text (from PDF export):
 ${profileText}`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = await generateContentWithRetry(
+    prompt,
+    "You are a senior engineering hiring manager. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    { temperature: 0.3, responseMimeType: "application/json" }
+  );
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }
@@ -230,16 +227,6 @@ ${profileText}`;
 // MCQ QUIZ GENERATOR
 // ─────────────────────────────────────────
 export async function generateQuiz(targetRole: string, numQuestions: number = 5) {
-  const genAI = getGeminiClient();
-  const model = genAI.getGenerativeModel({
-    model: MODEL_NAME,
-    systemInstruction: "You are an expert technical interviewer. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
-    generationConfig: {
-      temperature: 0.7,
-      responseMimeType: "application/json",
-    }
-  });
-
   const prompt = `Create a ${numQuestions}-question multiple choice quiz for a "${targetRole}". 
 The questions should cover core technical concepts, practical scenarios, and best practices relevant to this role.
 Vary the difficulty from intermediate to advanced.
@@ -254,8 +241,11 @@ Return ONLY a JSON array with this exact structure:
   }
 ]`;
 
-  const result = await model.generateContent(prompt);
-  const text = result.response.text();
+  const text = await generateContentWithRetry(
+    prompt,
+    "You are an expert technical interviewer. Always respond with valid JSON only, no markdown, no backticks, no explanation.",
+    { temperature: 0.7, responseMimeType: "application/json" }
+  );
   const clean = text.replace(/```json|```/g, "").trim();
   return JSON.parse(clean);
 }

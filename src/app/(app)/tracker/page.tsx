@@ -222,11 +222,11 @@ export default function TrackerPage() {
               {filtered.map((app) => {
                 const sc = statusConfig[app.status] || statusConfig.APPLIED;
                 return (
-                  <div key={app.id} className="card" style={{ padding: "16px 20px" }}>
+                  <div key={app.id} className="card" style={{ padding: "16px 20px", borderLeft: `5px solid ${sc.color}`, transition: "all 0.3s ease" }}>
                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: "16px" }}>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "4px" }}>
-                          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "16px" }}>
+                          <span style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "16px", color: "var(--text)" }}>
                             {app.company}
                           </span>
                           <span style={{ color: "var(--text-muted)", fontSize: "14px" }}>· {app.role}</span>

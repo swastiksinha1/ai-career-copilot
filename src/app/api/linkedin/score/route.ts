@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { scoreLinkedinProfile } from "@/lib/anthropic";
-import pdfParse from "pdf-parse";
+const pdfParse = require("pdf-parse");
 
 export async function POST(req: NextRequest) {
   try {
@@ -18,7 +18,8 @@ export async function POST(req: NextRequest) {
     if (!file) return NextResponse.json({ error: "PDF file is required" }, { status: 400 });
 
     const buffer = Buffer.from(await file.arrayBuffer());
-    const parsed = await pdfParse(buffer);
+    const pdfParseFn = typeof pdfParse === "function" ? pdfParse : pdfParse.default;
+    const parsed = await pdfParseFn(buffer);
     const profileText = parsed.text;
 
     // AI Scoring

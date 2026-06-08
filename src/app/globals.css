@@ -179,6 +179,7 @@ h1, h2, h3, h4, h5 {
     -10px -10px 20px var(--card-shadow-2) !important;
   transition: all 0.4s cubic-bezier(0.22, 1.4, 0.36, 1);
   border: 1px solid var(--card-border) !important;
+  padding: 24px;
   will-change: transform, box-shadow;
   backface-visibility: hidden;
   transform: translateZ(0);
@@ -196,13 +197,18 @@ h1, h2, h3, h4, h5 {
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: all 0.2s ease;
   padding: 6px 12px;
   border-radius: 6px;
 }
 
 .nav-link:hover {
   color: var(--text);
+  background: rgba(255,255,255,0.05);
+}
+
+.nav-link.active {
+  color: var(--accent);
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -219,8 +225,7 @@ h1, h2, h3, h4, h5 {
   background: rgba(255, 255, 255, 0.3);
 }
 
-.nav-link:hover { color: var(--text); background: rgba(255,255,255,0.05); }
-.nav-link.active { color: var(--accent); }
+
 
 .custom-input {
   background: var(--bg-3) !important;
